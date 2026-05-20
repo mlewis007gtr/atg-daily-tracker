@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ATG Daily Task Tracker — Mike Lewis</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
 <style>
   :root {
     --atg-navy:#0d1b2a; --atg-blue:#1a3a5c; --atg-accent:#2176ae;
@@ -14,14 +13,7 @@
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Segoe UI',system-ui,sans-serif; background:#f1f5f9; color:var(--text); font-size:14px; }
-
-  /* HEADER */
-  .page-header {
-    background:linear-gradient(135deg,var(--atg-navy),var(--atg-blue));
-    color:#fff; padding:18px 32px; display:flex; align-items:center;
-    justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.25);
-    position:sticky; top:0; z-index:100;
-  }
+  .page-header { background:linear-gradient(135deg,var(--atg-navy),var(--atg-blue)); color:#fff; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.25); position:sticky; top:0; z-index:100; }
   .brand { font-size:21px; font-weight:700; }
   .brand span { color:#60a5fa; }
   .header-meta { text-align:right; font-size:12px; opacity:.85; }
@@ -31,8 +23,6 @@
   .sync-dot.syncing { background:#fbbf24; }
   .sync-dot.error { background:#f87171; animation:none; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-  /* TOOLBAR */
   .toolbar { background:#fff; border-bottom:1px solid var(--border); padding:9px 32px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .toolbar select, .toolbar input { border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:13px; background:#fff; color:var(--text); }
   .toolbar select:focus, .toolbar input:focus { outline:2px solid var(--atg-accent); border-color:transparent; }
@@ -46,13 +36,10 @@
   .stat-pill { background:var(--atg-light); border-radius:20px; padding:3px 12px; font-size:12px; font-weight:600; color:var(--atg-blue); }
   .stat-pill.done { background:var(--green-bg); color:var(--green); }
   .stat-pill.pending { background:var(--yellow-bg); color:var(--yellow); }
-
-  /* BODY */
-  .page-body { padding:22px 32px; max-width:1600px; margin:0 auto; }
+  .stat-pill.overdue { background:#fee2e2; color:#991b1b; }
+  .page-body { padding:22px 32px; max-width:1800px; margin:0 auto; }
   .section-title { font-size:15px; font-weight:700; color:var(--atg-navy); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
   .badge { background:var(--atg-accent); color:#fff; border-radius:10px; padding:1px 8px; font-size:11px; font-weight:700; }
-
-  /* MEETING CARDS */
   .meetings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(420px,1fr)); gap:14px; margin-bottom:28px; }
   .meeting-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,.06); overflow:hidden; }
   .meeting-card:hover { box-shadow:0 4px 14px rgba(33,118,174,.15); }
@@ -62,82 +49,73 @@
   .mcard-body { padding:13px 15px; }
   .info-row { display:flex; gap:8px; margin-bottom:7px; align-items:flex-start; }
   .info-label { font-size:11px; font-weight:700; color:var(--atg-accent); text-transform:uppercase; letter-spacing:.4px; min-width:78px; margin-top:1px; }
-  .chip { display:inline-block; border-radius:4px; padding:1px 7px; font-size:11px; font-weight:600; margin:2px 2px 2px 0; }
-  .chip-company { background:#ede9fe; color:#5b21b6; }
-  .chip-attendee { background:var(--atg-light); color:var(--atg-blue); }
-  .chip-host { background:var(--atg-blue); color:#fff; }
-  .summary-box { font-size:13px; line-height:1.6; border-left:3px solid var(--atg-accent); background:var(--atg-light); border-radius:0 6px 6px 0; padding:8px 10px; margin:8px 0; }
-  .ai-list { margin-top:9px; border-top:1px dashed var(--border); padding-top:9px; }
-  .ai-list-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
-  .ai-row { display:flex; align-items:flex-start; gap:7px; padding:4px 0; border-bottom:1px solid #f1f5f9; }
-  .ai-row:last-child { border-bottom:none; }
-  .ai-row input[type=checkbox] { margin-top:2px; cursor:pointer; accent-color:var(--atg-accent); width:14px; height:14px; flex-shrink:0; }
-  .ai-text { font-size:12px; flex:1; line-height:1.4; }
-  .ai-text.done { text-decoration:line-through; color:var(--muted); }
-
-  /* TABLE */
+  .chip { display:inline-block; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:600; margin:2px 2px 2px 0; transition:all .12s; }
+  .chip-company  { background:#ede9fe; color:#5b21b6; cursor:pointer; }
+  .chip-company:hover  { background:#c4b5fd; transform:scale(1.04); }
+  .chip-attendee { background:var(--atg-light); color:var(--atg-blue); cursor:pointer; }
+  .chip-attendee:hover { background:#bfdbfe; transform:scale(1.04); }
+  .chip-host { background:var(--atg-blue); color:#fff; cursor:pointer; }
+  .chip-host:hover { filter:brightness(1.2); transform:scale(1.04); }
+  .summary-box { border-left:3px solid var(--atg-accent); background:var(--atg-light); border-radius:0 6px 6px 0; padding:8px 10px; margin:8px 0; }
+  .summary-scroll { max-height:160px; overflow-y:auto; padding-right:6px; }
+  .summary-scroll::-webkit-scrollbar { width:5px; }
+  .summary-scroll::-webkit-scrollbar-track { background:transparent; }
+  .summary-scroll::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:3px; }
+  .summary-list { list-style:none; margin:0; padding:0; }
+  .summary-list li { font-size:13px; line-height:1.6; padding:3px 0 3px 16px; position:relative; color:var(--text); }
+  .summary-list li::before { content:'•'; position:absolute; left:0; color:var(--atg-accent); font-weight:900; font-size:14px; line-height:1.4; }
+  .meeting-link { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--atg-accent); text-decoration:none; margin-top:5px; font-weight:600; }
+  .meeting-link:hover { text-decoration:underline; }
   .table-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,.06); overflow:hidden; margin-bottom:28px; }
-  .table-header { padding:13px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; background:#f8fafc; }
+  .table-header { padding:13px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; background:#f8fafc; flex-wrap:wrap; gap:8px; }
   table { width:100%; border-collapse:collapse; }
-  thead th { background:var(--atg-navy); color:#fff; text-align:left; padding:9px 11px; font-size:11px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; cursor:pointer; user-select:none; white-space:nowrap; }
-  thead th:hover { background:var(--atg-blue); }
+  thead th { background:var(--atg-navy); color:#fff; text-align:left; padding:9px 11px; font-size:11px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; white-space:nowrap; }
   tbody tr { border-bottom:1px solid #f1f5f9; transition:background .1s; }
   tbody tr:hover { background:var(--row-hover); }
-  tbody tr.done-row { opacity:.55; }
-  tbody td { padding:8px 11px; vertical-align:top; font-size:13px; }
-  .status-btn { display:inline-flex; align-items:center; gap:3px; border-radius:5px; padding:3px 9px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; border:none; transition:all .15s; }
-  .status-btn.pending { background:var(--yellow-bg); color:var(--yellow); }
-  .status-btn.pending:hover { background:#ffe69c; }
-  .status-btn.done { background:var(--green-bg); color:var(--green); }
-  .status-btn.done:hover { background:#b9e0c5; }
-  .status-btn.in-progress { background:#cfe2ff; color:#0a58ca; }
-  .pdot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; }
-  .p-high { background:#dc3545; } .p-med { background:#fd7e14; } .p-low { background:#198754; }
+  tbody tr.done-row { opacity:.5; }
+  tbody tr.overdue-row { border-left:3px solid #dc3545; background:#fff8f8; }
+  tbody tr.overdue-row:hover { background:#ffefef; }
+  tbody td { padding:8px 11px; vertical-align:middle; font-size:13px; }
+  .prio-select { border:none; border-radius:5px; padding:3px 7px; font-size:12px; font-weight:700; cursor:pointer; width:100%; appearance:none; text-align:center; }
+  .prio-select:focus { outline:2px solid var(--atg-accent); }
+  .prio-select.high { background:#fee2e2; color:#991b1b; }
+  .prio-select.med  { background:#fef9c3; color:#854d0e; }
+  .prio-select.low  { background:#dbeafe; color:#1e40af; }
+  .status-btn { display:inline-flex; align-items:center; justify-content:center; border-radius:5px; padding:3px 9px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; border:none; transition:all .15s; width:100%; }
+  .status-btn.pending      { background:var(--yellow-bg); color:var(--yellow); }
+  .status-btn.pending:hover{ background:#ffe69c; }
+  .status-btn.done         { background:var(--green-bg);  color:var(--green); }
+  .status-btn.done:hover   { background:#b9e0c5; }
+  .status-btn.in-progress  { background:#cfe2ff; color:#0a58ca; }
+  .status-btn.in-progress:hover { background:#b6d4fe; }
   .mtag { display:inline-block; background:#ede9fe; color:#5b21b6; border-radius:4px; padding:2px 7px; font-size:11px; font-weight:600; }
   .mtag.today { background:#dbeafe; color:#1d4ed8; }
-  .editable { min-height:18px; border-radius:3px; padding:1px 3px; }
+  .editable { min-height:18px; border-radius:3px; padding:1px 4px; }
   .editable:hover { background:#f0f6ff; }
   .editable:focus { outline:2px solid var(--atg-accent); background:#fff; border-radius:3px; }
   .divider-row td { background:var(--atg-navy); color:#fff; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:5px 11px; }
   .hidden-row { display:none !important; }
-
-  /* NOTES */
+  .overdue-badge { background:#fee2e2; color:#991b1b; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; margin-left:5px; vertical-align:middle; }
+  .add-item-row td { background:#f8fafc; padding:6px 11px; }
+  .add-item-row input, .add-item-row select { border:1px solid var(--border); border-radius:4px; padding:4px 7px; font-size:13px; width:100%; font-family:inherit; }
+  .last-updated { text-align:center; font-size:11px; color:var(--muted); padding:10px; border-top:1px solid var(--border); }
   .notes-panel { background:#fff; border-radius:10px; border:1px solid var(--border); padding:15px 18px; margin-bottom:28px; }
-  .notes-area { width:100%; min-height:80px; border:1px solid var(--border); border-radius:6px; padding:9px; font-size:13px; font-family:inherit; color:var(--text); resize:vertical; margin-top:7px; }
-  .notes-area:focus { outline:2px solid var(--atg-accent); border-color:transparent; }
-
-  /* LOADING */
-  .loading-overlay { position:fixed; inset:0; background:rgba(13,27,42,.7); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999; color:#fff; gap:14px; }
+  .notes-editor { width:100%; min-height:130px; border:1px solid var(--border); border-radius:6px; padding:10px 13px; font-size:13px; font-family:inherit; color:var(--text); line-height:1.8; margin-top:8px; outline:none; white-space:pre-wrap; word-break:break-word; overflow-y:auto; }
+  .notes-editor:focus { outline:2px solid var(--atg-accent); border-color:transparent; }
+  .notes-editor:empty::before { content:attr(data-placeholder); color:#94a3b8; pointer-events:none; display:block; }
+  .loading-overlay { position:fixed; inset:0; background:rgba(13,27,42,.75); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999; color:#fff; gap:14px; }
   .spinner { width:40px; height:40px; border:4px solid rgba(255,255,255,.2); border-top-color:#60a5fa; border-radius:50%; animation:spin .8s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
-
-  /* ADD ROW */
-  .add-item-row td { background:#f8fafc; }
-  .add-item-row input, .add-item-row select { border:1px solid var(--border); border-radius:4px; padding:4px 7px; font-size:13px; width:100%; font-family:inherit; }
-
-  .last-updated { text-align:center; font-size:11px; color:var(--muted); padding:10px; border-top:1px solid var(--border); }
-
-  @media (max-width:768px) {
-    .page-header, .toolbar, .page-body { padding-left:14px; padding-right:14px; }
-    .meetings-grid { grid-template-columns:1fr; }
-    thead th:nth-child(4), tbody td:nth-child(4) { display:none; }
-  }
-  @media print {
-    .toolbar, .btn, .loading-overlay { display:none !important; }
-    body { background:#fff; }
-    .page-header { position:relative; }
-  }
+  @media (max-width:900px) { .page-header, .toolbar, .page-body { padding-left:14px; padding-right:14px; } .meetings-grid { grid-template-columns:1fr; } }
+  @media print { .toolbar, .btn, .loading-overlay { display:none !important; } body { background:#fff; } .page-header { position:relative; } }
 </style>
 </head>
 <body>
-
-<!-- Loading overlay -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
   <div style="font-size:15px;font-weight:600;">Loading your tracker...</div>
   <div style="font-size:12px;opacity:.7;" id="loadingMsg">Connecting to Supabase</div>
 </div>
-
 <header class="page-header">
   <div>
     <div class="brand">ATG <span>|</span> Daily Task Tracker</div>
@@ -145,426 +123,306 @@
   </div>
   <div class="header-meta">
     <div class="date-big" id="headerDate">Loading...</div>
-    <div class="sync-indicator">
-      <div class="sync-dot" id="syncDot"></div>
-      <span id="syncLabel">Connecting...</span>
-    </div>
+    <div class="sync-indicator"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Connecting...</span></div>
   </div>
 </header>
-
 <div class="toolbar">
   <label style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;">Filter:</label>
-  <select id="filterStatus" onchange="applyFilters()">
-    <option value="all">All Status</option>
-    <option value="pending">Pending</option>
-    <option value="in-progress">In Progress</option>
-    <option value="done">Done</option>
-  </select>
-  <select id="filterMeeting" onchange="applyFilters()">
-    <option value="all">All Meetings</option>
-    <option value="deep-fathom">Deep Fathom</option>
-    <option value="oasis">Oasis+</option>
-    <option value="trellix">Trellix Event</option>
-    <option value="westover">ATG &amp; Westover</option>
-    <option value="other">Other</option>
-  </select>
-  <input type="text" id="searchInput" placeholder="Search tasks..." oninput="applyFilters()" style="min-width:170px;">
-  <select id="filterDate" onchange="applyFilters()">
-    <option value="all">All Dates</option>
-    <option value="today">Today Only</option>
-    <option value="week">This Week</option>
-  </select>
+  <select id="filterStatus" onchange="applyFilters()"><option value="all">All Status</option><option value="pending">Pending</option><option value="in-progress">In Progress</option><option value="done">Done</option></select>
+  <select id="filterMeeting" onchange="applyFilters()"><option value="all">All Meetings</option></select>
+  <select id="filterPerson" onchange="applyFilters()"><option value="all">All People / Companies</option></select>
+  <input type="text" id="searchInput" placeholder="Search tasks..." oninput="applyFilters()" style="min-width:160px;">
   <div class="spacer"></div>
+  <span class="stat-pill overdue" id="overdueCount" style="display:none;">Overdue: 0</span>
   <span class="stat-pill pending" id="pendingCount">Pending: —</span>
   <span class="stat-pill done" id="doneCount">Done: —</span>
   <span class="stat-pill" id="totalCount">Total: —</span>
+  <button class="btn btn-outline btn-sm" onclick="exportWeekly()">&#128196; Export Week</button>
+  <button class="btn btn-outline btn-sm" onclick="sendEmailDigest()">&#9993; Digest</button>
   <button class="btn btn-outline btn-sm" onclick="window.print()">Print</button>
   <button class="btn btn-outline btn-sm" onclick="refreshData()">&#8635; Refresh</button>
   <button class="btn btn-primary btn-sm" onclick="showAddRow()">+ Add Task</button>
 </div>
-
 <div class="page-body">
-
-  <div class="section-title">
-    Today's Meetings
-    <span class="badge" id="meetingBadge">—</span>
-  </div>
-  <div class="meetings-grid" id="meetingsGrid">
-    <div style="color:var(--muted);font-size:13px;padding:20px;">Loading meetings...</div>
-  </div>
-
-  <div class="section-title">
-    All Pending Do-Outs &amp; Deliverables
-    <span class="badge" id="tableBadge">—</span>
-  </div>
-
+  <div class="section-title">Today's Meetings <span class="badge" id="meetingBadge">—</span></div>
+  <div class="meetings-grid" id="meetingsGrid"><div style="color:var(--muted);font-size:13px;padding:20px;">Loading meetings...</div></div>
+  <div class="section-title">All Pending Do-Outs &amp; Deliverables <span class="badge" id="tableBadge">—</span></div>
   <div class="table-card">
     <div class="table-header">
       <div style="font-size:13px;font-weight:700;color:var(--atg-navy);">Master Action Item List</div>
       <div style="margin-left:auto;font-size:12px;color:var(--muted);">Click status to cycle &bull; Click cell to edit &bull; Syncs across all devices</div>
     </div>
     <div style="overflow-x:auto;">
-    <table id="actionTable">
-      <thead>
-        <tr>
+      <table id="actionTable">
+        <thead><tr>
           <th style="width:32px;">&check;</th>
-          <th>Date / Time</th>
-          <th>Meeting</th>
-          <th>Attendees</th>
-          <th style="width:76px;">Priority</th>
-          <th>Action Item / Deliverable</th>
-          <th style="width:108px;">Assignee</th>
-          <th style="width:88px;">Due Date</th>
-          <th style="width:108px;">Status</th>
+          <th style="min-width:80px;">Date</th>
+          <th style="min-width:110px;">Meeting</th>
+          <th style="min-width:110px;">Attendees</th>
+          <th style="width:100px;">Priority</th>
+          <th style="min-width:200px;">Action Item / Deliverable</th>
+          <th style="min-width:120px;">Partner POC</th>
+          <th style="min-width:120px;">ATG POC</th>
+          <th style="width:90px;">Due Date</th>
+          <th style="width:115px;">Status</th>
           <th style="width:30px;"></th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted);">Loading action items...</td></tr>
-      </tbody>
-    </table>
+        </tr></thead>
+        <tbody id="tableBody"><tr><td colspan="11" style="text-align:center;padding:20px;color:var(--muted);">Loading...</td></tr></tbody>
+      </table>
     </div>
-    <div class="last-updated" id="lastUpdated">Connecting to database...</div>
+    <div class="last-updated" id="lastUpdated">Connecting...</div>
   </div>
-
   <div class="notes-panel">
-    <div class="section-title" style="margin:0;">Daily Notes</div>
-    <textarea class="notes-area" id="dailyNotes" placeholder="Add notes, context, or reminders here..."></textarea>
-    <div style="text-align:right;margin-top:5px;">
+    <div class="section-title" style="margin-bottom:0;">Daily Notes <span style="font-size:11px;font-weight:400;color:var(--muted);">— click &bull; Bullet to insert a bullet point</span></div>
+    <div class="notes-editor" id="dailyNotes" contenteditable="true" data-placeholder="Add notes, context, or follow-up reminders here..."></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
+      <button class="btn btn-outline btn-sm" onclick="insertBullet()">&#8226; Bullet</button>
       <button class="btn btn-primary btn-sm" onclick="saveNotes()">Save Notes</button>
     </div>
   </div>
-
 </div>
-
 <script>
-// ═══════════════════════════════════════════════════
-// CONFIG — Supabase connection
-// ═══════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://ugpqckzplznrawfnglys.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVncHFja3pwbHpucmF3Zm5nbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTg4NTEsImV4cCI6MjA5NDg3NDg1MX0.DUDH9hb0UGrOIznzOAJksieNWexeVPdlvodZJsr2jlY';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InUncHFja3pwbHpucmF3Zm5nbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTg4NTEsImV4cCI6MjA5NDg3NDg1MX0.DUDH9hb0UGrOIznzOAJksieNWexeVPdlvodZJsr2jlY';
 const TODAY = new Date().toISOString().split('T')[0];
+let _allItems = [];
 
-// ═══════════════════════════════════════════════════
-// SUPABASE HELPERS
-// ═══════════════════════════════════════════════════
-async function sb(path, options = {}) {
-  const url = `${SUPABASE_URL}/rest/v1/${path}`;
-  const res = await fetch(url, {
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${SUPABASE_ANON}`,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || 'return=representation',
-      ...options.headers
-    },
-    method: options.method || 'GET',
-    body: options.body ? JSON.stringify(options.body) : undefined
+async function sb(path, opts={}) {
+  const res = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
+    headers:{ 'apikey':SUPABASE_ANON,'Authorization':'Bearer '+SUPABASE_ANON,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers },
+    method:opts.method||'GET', body:opts.body?JSON.stringify(opts.body):undefined
   });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Supabase error ${res.status}: ${err}`);
-  }
-  if (res.status === 204) return null;
+  if(!res.ok){const t=await res.text();throw new Error('Supabase '+res.status+': '+t);}
+  if(res.status===204)return null;
   return res.json();
 }
 
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
 async function init() {
-  setSyncState('syncing', 'Loading data...');
+  setSyncState('syncing','Loading data...');
   setLoadingMsg('Fetching meetings & action items');
-
   try {
-    const [meetings, items, note] = await Promise.all([
-      sb(`meetings?meeting_date=eq.${TODAY}&order=meeting_time.asc`),
+    const [meetings,items,note] = await Promise.all([
+      sb('meetings?meeting_date=eq.'+TODAY+'&order=meeting_time.asc'),
       sb('action_items?order=meeting_date.desc,id.asc'),
-      sb(`daily_notes?note_date=eq.${TODAY}`).catch(() => [])
+      sb('daily_notes?note_date=eq.'+TODAY).catch(()=>[])
     ]);
-
-    renderMeetingCards(meetings || []);
-    renderTable(items || []);
-
-    if (note && note.length > 0) {
-      document.getElementById('dailyNotes').value = note[0].content || '';
-    }
-
-    updateHeaderDate();
-    updateStats();
-    setSyncState('ok', `Synced ${new Date().toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'})}`);
-    document.getElementById('lastUpdated').textContent =
-      `Live data from Supabase · Mikes Daily Circleback Summary · Last loaded ${new Date().toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}`;
+    _allItems = items||[];
+    renderMeetingCards(meetings||[]);
+    renderTable(_allItems);
+    populateFilterDropdowns(meetings||[], _allItems);
+    if(note&&note.length>0) loadNotes(note[0].content||'');
+    updateHeaderDate(); updateStats();
+    setSyncState('ok','Synced '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}));
+    document.getElementById('lastUpdated').textContent='Live · Mikes Daily Circleback Summary · Last loaded '+new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
   } catch(e) {
-    setSyncState('error', 'Connection error');
-    console.error(e);
-    document.getElementById('lastUpdated').textContent = 'Error connecting to database: ' + e.message;
-  } finally {
-    document.getElementById('loadingOverlay').style.display = 'none';
-  }
+    setSyncState('error','Connection error'); console.error(e);
+    document.getElementById('lastUpdated').textContent='Error: '+e.message;
+  } finally { document.getElementById('loadingOverlay').style.display='none'; }
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER MEETING CARDS
-// ═══════════════════════════════════════════════════
+function populateFilterDropdowns(meetings,items) {
+  const meetSel=document.getElementById('filterMeeting');
+  meetSel.innerHTML='<option value="all">All Meetings</option>';
+  const seenM=new Set();
+  items.forEach(i=>{ if(i.meeting_label&&!seenM.has(i.meeting_label)){seenM.add(i.meeting_label);meetSel.innerHTML+=`<option value="${esc(i.meeting_label)}">${esc(i.meeting_label)}</option>`;} });
+  const personSel=document.getElementById('filterPerson');
+  personSel.innerHTML='<option value="all">All People / Companies</option>';
+  const people=new Set();
+  items.forEach(i=>{ [i.assignee_name,i.partner_poc,i.alt_atg_poc,i.attendees_text].forEach(v=>{if(v&&v.trim())people.add(v.trim());}); });
+  meetings.forEach(m=>{ (Array.isArray(m.companies)?m.companies:[]).forEach(c=>c&&people.add(c)); (Array.isArray(m.attendees)?m.attendees:[]).forEach(a=>{const n=a.name||a;if(n)people.add(n);}); });
+  [...people].sort().forEach(p=>{ personSel.innerHTML+=`<option value="${esc(p)}">${esc(p)}</option>`; });
+}
+
+function toBullets(text) {
+  if(!text||!text.trim())return '<li>No summary available.</li>';
+  let lines=text.split(/\n+/).map(s=>s.trim()).filter(s=>s.length>2);
+  if(lines.length<=1) lines=text.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(s=>s.length>2);
+  if(lines.length===0)return '<li>'+esc(text.trim())+'</li>';
+  return lines.map(l=>'<li>'+esc(l.replace(/^[-*ڀ�]\s*/,''))+'</li>').join('');
+}
+
 function renderMeetingCards(meetings) {
-  const grid = document.getElementById('meetingsGrid');
-  document.getElementById('meetingBadge').textContent = meetings.length + ' Calls';
-
-  if (meetings.length === 0) {
-    grid.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px;grid-column:1/-1;">No meetings found for today.</div>';
-    return;
-  }
-
-  grid.innerHTML = meetings.map(m => {
-    const attendees = Array.isArray(m.attendees) ? m.attendees : [];
-    const companies = Array.isArray(m.companies) ? m.companies : [];
-    return `
-    <div class="meeting-card">
-      <div class="mcard-header">
-        <div class="call-name">${esc(m.call_name)}</div>
-        <div class="time-chip">${esc(m.meeting_time || '')}</div>
-      </div>
+  const grid=document.getElementById('meetingsGrid');
+  document.getElementById('meetingBadge').textContent=meetings.length+' Calls';
+  if(meetings.length===0){grid.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px;grid-column:1/-1;">No meetings found for today.</div>';return;}
+  grid.innerHTML=meetings.map(m=>{
+    const attendees=Array.isArray(m.attendees)?m.attendees:[];
+    const companies=Array.isArray(m.companies)?m.companies:[];
+    const cbUrl=m.meeting_url||m.circleback_url||(m.circleback_id?'https://app.circleback.ai/meetings/'+m.circleback_id:null);
+    const companyChips=companies.map(c=>`<span class="chip chip-company" onclick="quickFilter('${escAttr(c)}')" title="Filter by ${escAttr(c)}">${esc(c)}</span>`).join('');
+    const attendeeChips=attendees.map((a,i)=>{const name=a.name||a;return`<span class="chip ${i===0?'chip-host':'chip-attendee'}" onclick="quickFilter('${escAttr(name)}')">${esc(name)}</span>`;}).join('');
+    return `<div class="meeting-card">
+      <div class="mcard-header"><div class="call-name">${esc(m.call_name)}</div><div class="time-chip">${esc(m.meeting_time||'')}</div></div>
       <div class="mcard-body">
-        <div class="info-row">
-          <div class="info-label">Companies</div>
-          <div>${companies.map(c => `<span class="chip chip-company">${esc(c)}</span>`).join('')}</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">Attendees</div>
-          <div>${attendees.map((a,i) => `<span class="chip ${i===0?'chip-host':'chip-attendee'}">${esc(a.name||a)}</span>`).join('')}</div>
-        </div>
-        <div class="summary-box">${esc(m.summary || m.raw_notes || 'No summary available.')}</div>
-      </div>
-    </div>`;
+        <div class="info-row"><div class="info-label">Companies</div><div>${companyChips||'<span style="color:var(--muted);font-size:12px;">—</span>'}${cbUrl?'<br><a class="meeting-link" href="'+cbUrl+'" target="_blank" rel="noopener">&#128279; View in Circleback</a>':''}</div></div>
+        <div class="info-row"><div class="info-label">Attendees</div><div>${attendeeChips||'<span style="color:var(--muted);font-size:12px;">—</span>'}</div></div>
+        <div class="summary-box"><div class="summary-scroll"><ul class="summary-list">${toBullets(m.summary||m.raw_notes)}</ul></div></div>
+      </div></div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER TABLE
-// ═══════════════════════════════════════════════════
 function renderTable(items) {
-  const tbody = document.getElementById('tableBody');
-  if (items.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted);">No action items found. Click "+ Add Task" to get started.</td></tr>';
-    updateStats();
-    return;
-  }
-
-  let html = '';
-  let lastDate = null;
-
-  items.forEach(item => {
-    const dateLabel = item.meeting_date === TODAY ? 'TODAY — ' + fmtDate(item.meeting_date) : 'CARRY-FORWARD — ' + fmtDate(item.meeting_date);
-    if (item.meeting_date !== lastDate) {
-      html += `<tr class="divider-row"><td colspan="10">${dateLabel}</td></tr>`;
-      lastDate = item.meeting_date;
-    }
-
-    const isToday = item.meeting_date === TODAY;
-    const isDone  = item.status === 'done';
-    const dotCls  = item.priority === 'high' ? 'p-high' : item.priority === 'low' ? 'p-low' : 'p-med';
-    const statusLabel = item.status === 'done' ? 'Done' : item.status === 'in-progress' ? 'In Progress' : 'Pending';
-
-    html += `
-    <tr data-id="${item.id}" data-status="${item.status}" data-meeting="${item.meeting_tag_type}" class="${isDone?'done-row':''}">
+  const tbody=document.getElementById('tableBody');
+  if(items.length===0){tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:20px;color:var(--muted);">No action items. Click &ldquo;+ Add Task&rdquo; to start.</td></tr>';updateStats();return;}
+  let html='',lastDate=null;
+  const now=new Date();
+  items.forEach(item=>{
+    const dateLabel=item.meeting_date===TODAY?'TODAY &mdash; '+fmtDate(item.meeting_date):'CARRY-FORWARD &mdash; '+fmtDate(item.meeting_date);
+    if(item.meeting_date!==lastDate){html+=`<tr class="divider-row"><td colspan="11">${dateLabel}</td></tr>`;lastDate=item.meeting_date;}
+    const isToday=item.meeting_date===TODAY,isDone=item.status==='done';
+    const prio=(item.priority||'med').toLowerCase(),prioKey=prio==='high'?'high':prio==='low'?'low':'med';
+    const statusLabel=item.status==='done'?'Done':item.status==='in-progress'?'In Progress':'Pending';
+    let isOverdue=false;
+    if(!isDone&&item.due_date&&item.due_date!=='TBD'){const dm=item.due_date.match(/\d{4}-\d{2}-\d{2}/);if(dm)isOverdue=new Date(dm[0]+'T23:59:59')<now;}
+    const dataText=[item.title,item.assignee_name,item.partner_poc,item.alt_atg_poc,item.attendees_text,item.meeting_label].filter(Boolean).join(' ').toLowerCase();
+    html+=`<tr data-id="${item.id}" data-status="${item.status||'pending'}" data-meeting="${escAttr(item.meeting_label||'')}" data-text="${escAttr(dataText)}" class="${isDone?'done-row':''}${isOverdue?' overdue-row':''}">
       <td><input type="checkbox" ${isDone?'checked':''} onchange="toggleDone(this,${item.id})" style="cursor:pointer;accent-color:var(--atg-accent);width:15px;height:15px;"></td>
       <td class="editable" contenteditable="true" data-field="meeting_date" onblur="patchItem(this,${item.id})">${esc(fmtDate(item.meeting_date))}</td>
       <td><span class="mtag ${isToday?'today':''}">${esc(item.meeting_label||'—')}</span></td>
-      <td class="editable" contenteditable="true" data-field="assignee_name" onblur="patchItem(this,${item.id})">${esc(item.assignee_name||'Mike Lewis')}</td>
-      <td><span class="pdot ${dotCls}"></span><span class="editable" contenteditable="true" data-field="priority" onblur="patchItem(this,${item.id})" style="font-size:12px;">${esc(item.priority||'med')}</span></td>
-      <td class="editable" contenteditable="true" data-field="title" onblur="patchItem(this,${item.id})">${esc(item.title)}</td>
-      <td class="editable" contenteditable="true" data-field="assignee_name" onblur="patchItem(this,${item.id})">${esc(item.assignee_name||'Mike Lewis')}</td>
-      <td class="editable" contenteditable="true" data-field="due_date" onblur="patchItem(this,${item.id})">${esc(item.due_date||'TBD')}</td>
-      <td><button class="status-btn ${item.status}" data-id="${item.id}" onclick="cycleStatus(this)">${statusLabel}</button></td>
-      <td><button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;border:none;cursor:pointer;" onclick="deleteItem(this,${item.id})">&#10005;</button></td>
+      <td class="editable" contenteditable="true" data-field="attendees_text" onblur="patchItem(this,${item.id})">${esc(item.attendees_text||'')}</td>
+      <td><select class="prio-select ${prioKey}" onchange="this.className='prio-select '+(this.value==='high'?'high':this.value==='low'?'low':'med');setPriority(this,${item.id})">
+        <option value="high" ${prioKey==='high'?'selected':''}>&#128308; High</option>
+        <option value="med"  ${prioKey==='med' ?'selected':''}>&#128993; Medium</option>
+        <option value="low"  ${prioKey==='low' ?'selected':''}>&#128309; Low</option>
+      </select></td>
+      <td class="editable" contenteditable="true" data-field="title" onblur="patchItem(this,${item.id})">${esc(item.title)}${isOverdue?'<span class="overdue-badge" contenteditable="false">OVERDUE</span>':''}</td>
+      <td class="editable" contenteditable="true" data-field="partner_poc" onblur="patchItem(this,${item.id})">${esc(item.partner_poc||'')}</td>
+      <td class="editable" contenteditable="true" data-field="alt_atg_poc" onblur="patchItem(this,${item.id})">${esc(item.alt_atg_poc||item.assignee_name||'Mike Lewis')}</td>
+      <td class="editable" contenteditable="true" data-field="due_date" onblur="patchItem(this,${item.id})" style="${isOverdue?'color:#dc3545;font-weight:700;':''}">${esc(item.due_date||'TBD')}</td>
+      <td><button class="status-btn ${item.status||'pending'}" data-id="${item.id}" onclick="cycleStatus(this)">${statusLabel}</button></td>
+      <td><button onclick="deleteItem(this,${item.id})" style="background:#fee2e2;color:#991b1b;border:none;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:13px;">&#10005;</button></td>
     </tr>`;
   });
-
-  // Add row placeholder
-  html += `
-  <tr class="add-item-row" id="newTaskRow" style="display:none;">
-    <td></td>
-    <td><input type="text" id="nDate" placeholder="Date"></td>
-    <td><input type="text" id="nMeeting" placeholder="Meeting"></td>
-    <td><input type="text" id="nAttendees" placeholder="Attendees"></td>
-    <td><select id="nPriority"><option value="high">High</option><option value="med" selected>Med</option><option value="low">Low</option></select></td>
-    <td><input type="text" id="nAction" placeholder="Action item (required)"></td>
-    <td><input type="text" id="nAssignee" placeholder="Assignee" value="Mike Lewis"></td>
-    <td><input type="text" id="nDue" placeholder="Due date"></td>
-    <td><button class="btn btn-primary btn-sm" onclick="saveNewTask()">Save</button> <button class="btn btn-outline btn-sm" onclick="hideAddRow()">Cancel</button></td>
-    <td></td>
+  html+=`<tr class="add-item-row" id="newTaskRow" style="display:none;">
+    <td></td><td><input type="text" id="nDate" placeholder="${TODAY}"></td><td><input type="text" id="nMeeting" placeholder="Meeting name"></td><td><input type="text" id="nAttendees" placeholder="Attendees"></td>
+    <td><select id="nPriority" class="prio-select med" onchange="this.className='prio-select '+(this.value==='high'?'high':this.value==='low'?'low':'med')"><option value="high">&#128308; High</option><option value="med" selected>&#128993; Medium</option><option value="low">&#128309; Low</option></select></td>
+    <td><input type="text" id="nAction" placeholder="Action item (required)"></td><td><input type="text" id="nPartnerPoc" placeholder="Partner POC"></td><td><input type="text" id="nAltPoc" placeholder="ATG POC" value="Mike Lewis"></td><td><input type="text" id="nDue" placeholder="YYYY-MM-DD"></td>
+    <td><button class="btn btn-primary btn-sm" onclick="saveNewTask()">Save</button> <button class="btn btn-outline btn-sm" onclick="hideAddRow()">Cancel</button></td><td></td>
   </tr>`;
+  tbody.innerHTML=html; updateStats();
+}
 
-  tbody.innerHTML = html;
+async function setPriority(sel,id){await sb('action_items?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{priority:sel.value}}).catch(console.error);}
+
+async function cycleStatus(btn){
+  const id=btn.dataset.id,states=['pending','in-progress','done'],labels={pending:'Pending','in-progress':'In Progress',done:'Done'};
+  const cur=btn.dataset.state||btn.className.replace('status-btn','').trim(),next=states[(states.indexOf(cur)+1)%states.length];
+  btn.className='status-btn '+next;btn.textContent=labels[next];btn.dataset.state=next;
+  const row=btn.closest('tr');row.dataset.status=next;row.classList.toggle('done-row',next==='done');
+  const cb=row.querySelector('input[type=checkbox]');if(cb)cb.checked=next==='done';
   updateStats();
+  await sb('action_items?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{status:next,completed_at:next==='done'?new Date().toISOString():null}}).catch(console.error);
 }
 
-// ═══════════════════════════════════════════════════
-// STATUS CYCLE
-// ═══════════════════════════════════════════════════
-async function cycleStatus(btn) {
-  const id = btn.dataset.id;
-  const states  = ['pending','in-progress','done'];
-  const labels  = {pending:'Pending','in-progress':'In Progress',done:'Done'};
-  const cur     = btn.dataset.state || btn.className.replace('status-btn ','').trim();
-  const next    = states[(states.indexOf(cur) + 1) % states.length];
-
-  btn.className = 'status-btn ' + next;
-  btn.textContent = labels[next];
-  btn.dataset.state = next;
-
-  const row = btn.closest('tr');
-  row.dataset.status = next;
-  row.classList.toggle('done-row', next === 'done');
-  const cb = row.querySelector('input[type=checkbox]');
-  if (cb) cb.checked = next === 'done';
-
-  updateStats();
-  await sb(`action_items?id=eq.${id}`, {
-    method:'PATCH', prefer:'return=minimal',
-    body: { status: next, completed_at: next === 'done' ? new Date().toISOString() : null }
-  }).catch(console.error);
+async function toggleDone(cb,id){
+  const row=cb.closest('tr'),btn=row.querySelector('.status-btn'),s=cb.checked?'done':'pending',labels={pending:'Pending','in-progress':'In Progress',done:'Done'};
+  if(btn){btn.className='status-btn '+s;btn.textContent=labels[s];btn.dataset.state=s;}
+  row.dataset.status=s;row.classList.toggle('done-row',cb.checked);updateStats();
+  await sb('action_items?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{status:s,completed_at:cb.checked?new Date().toISOString():null}}).catch(console.error);
 }
 
-async function toggleDone(cb, id) {
-  const row    = cb.closest('tr');
-  const btn    = row.querySelector('.status-btn');
-  const s      = cb.checked ? 'done' : 'pending';
-  const labels = {pending:'Pending','in-progress':'In Progress',done:'Done'};
-  if (btn) { btn.className = 'status-btn ' + s; btn.textContent = labels[s]; btn.dataset.state = s; }
-  row.dataset.status = s;
-  row.classList.toggle('done-row', cb.checked);
-  updateStats();
-  await sb(`action_items?id=eq.${id}`, {
-    method:'PATCH', prefer:'return=minimal',
-    body: { status: s, completed_at: cb.checked ? new Date().toISOString() : null }
-  }).catch(console.error);
+async function patchItem(cell,id){
+  const field=cell.dataset.field;if(!field)return;
+  const value=cell.innerText.replace(/OVERDUE/g,'').trim();
+  await sb('action_items?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',body:{[field]:value}}).catch(console.error);
 }
 
-// ═══════════════════════════════════════════════════
-// INLINE EDIT (PATCH)
-// ═══════════════════════════════════════════════════
-async function patchItem(cell, id) {
-  const field = cell.dataset.field;
-  const value = cell.textContent.trim();
-  if (!field) return;
-  await sb(`action_items?id=eq.${id}`, {
-    method:'PATCH', prefer:'return=minimal',
-    body: { [field]: value }
-  }).catch(console.error);
+function showAddRow(){document.getElementById('newTaskRow').style.display='';document.getElementById('nAction').focus();}
+function hideAddRow(){document.getElementById('newTaskRow').style.display='none';}
+
+async function saveNewTask(){
+  const title=document.getElementById('nAction').value.trim();
+  if(!title){alert('Please enter an action item.');return;}
+  await sb('action_items',{method:'POST',body:{
+    meeting_date:document.getElementById('nDate').value.trim()||TODAY,
+    meeting_label:document.getElementById('nMeeting').value.trim()||'—',
+    meeting_tag_type:'other',title,priority:document.getElementById('nPriority').value,
+    attendees_text:document.getElementById('nAttendees').value.trim(),
+    partner_poc:document.getElementById('nPartnerPoc').value.trim(),
+    alt_atg_poc:document.getElementById('nAltPoc').value.trim()||'Mike Lewis',
+    due_date:document.getElementById('nDue').value.trim()||'TBD',status:'pending'
+  }}).catch(console.error);
+  hideAddRow();await refreshData();
 }
 
-// ═══════════════════════════════════════════════════
-// ADD / DELETE
-// ═══════════════════════════════════════════════════
-function showAddRow() { document.getElementById('newTaskRow').style.display=''; document.getElementById('nAction').focus(); }
-function hideAddRow() { document.getElementById('newTaskRow').style.display='none'; }
-
-async function saveNewTask() {
-  const title = document.getElementById('nAction').value.trim();
-  if (!title) { alert('Please enter an action item.'); return; }
-  const meeting = document.getElementById('nMeeting').value.trim() || '—';
-  const due = document.getElementById('nDue').value.trim() || 'TBD';
-  const priority = document.getElementById('nPriority').value;
-  const assignee = document.getElementById('nAssignee').value.trim() || 'Mike Lewis';
-
-  const [result] = await sb('action_items', {
-    method:'POST',
-    body: {
-      meeting_date: TODAY,
-      meeting_label: meeting,
-      meeting_tag_type: 'other',
-      title, priority, assignee_name: assignee,
-      due_date: due, status: 'pending'
-    }
-  });
-  hideAddRow();
-  await refreshData();
+async function deleteItem(btn,id){
+  if(!confirm('Remove this action item?'))return;
+  await sb('action_items?id=eq.'+id,{method:'DELETE',prefer:'return=minimal'}).catch(console.error);
+  btn.closest('tr').remove();updateStats();
 }
 
-async function deleteItem(btn, id) {
-  if (!confirm('Remove this action item?')) return;
-  await sb(`action_items?id=eq.${id}`, { method:'DELETE', prefer:'return=minimal' }).catch(console.error);
-  btn.closest('tr').remove();
-  updateStats();
+function loadNotes(content){document.getElementById('dailyNotes').innerText=content||'';}
+function insertBullet(){const el=document.getElementById('dailyNotes');el.focus();document.execCommand('insertText',false,'• ');}
+async function saveNotes(){
+  const content=document.getElementById('dailyNotes').innerText;
+  await sb('daily_notes',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:{note_date:TODAY,content}}).catch(console.error);
+  setSyncState('ok','Notes saved '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}));
 }
 
-// ═══════════════════════════════════════════════════
-// NOTES
-// ═══════════════════════════════════════════════════
-async function saveNotes() {
-  const content = document.getElementById('dailyNotes').value;
-  await sb('daily_notes', {
-    method:'POST',
-    prefer:'resolution=merge-duplicates,return=minimal',
-    body: { note_date: TODAY, content }
-  }).catch(console.error);
-  setSyncState('ok', 'Notes saved ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}));
-}
-
-// ═══════════════════════════════════════════════════
-// FILTERS & STATS
-// ═══════════════════════════════════════════════════
-function applyFilters() {
-  const sf = document.getElementById('filterStatus').value;
-  const mf = document.getElementById('filterMeeting').value;
-  const q  = document.getElementById('searchInput').value.toLowerCase();
-  document.querySelectorAll('#tableBody tr:not(.divider-row):not(.add-item-row)').forEach(row => {
-    const rs = row.dataset.status || 'pending';
-    const rm = row.dataset.meeting || 'other';
-    const rt = row.textContent.toLowerCase();
-    const ok = (sf==='all'||rs===sf) && (mf==='all'||rm===mf) && (q===''||rt.includes(q));
-    row.classList.toggle('hidden-row', !ok);
+function quickFilter(text){document.getElementById('searchInput').value=text;applyFilters();}
+function applyFilters(){
+  const sf=document.getElementById('filterStatus').value,mf=document.getElementById('filterMeeting').value.toLowerCase();
+  const pf=document.getElementById('filterPerson').value.toLowerCase(),q=document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('#tableBody tr:not(.divider-row):not(.add-item-row)').forEach(row=>{
+    const rs=row.dataset.status||'pending',rm=(row.dataset.meeting||'').toLowerCase(),rt=(row.dataset.text||row.textContent).toLowerCase();
+    row.classList.toggle('hidden-row',!((sf==='all'||rs===sf)&&(mf==='all'||rm.includes(mf))&&(pf==='all'||rt.includes(pf))&&(q===''||rt.includes(q))));
   });
   updateStats();
 }
 
-function updateStats() {
-  let p=0,d=0,t=0;
-  document.querySelectorAll('#tableBody tr:not(.divider-row):not(.add-item-row)').forEach(r => {
-    if (r.id==='newTaskRow'||r.classList.contains('hidden-row')) return;
-    t++; (r.dataset.status==='done') ? d++ : p++;
+function updateStats(){
+  let p=0,d=0,t=0,ov=0;
+  document.querySelectorAll('#tableBody tr:not(.divider-row):not(.add-item-row)').forEach(r=>{
+    if(r.id==='newTaskRow'||r.classList.contains('hidden-row'))return;
+    t++;if(r.dataset.status==='done')d++;else{p++;if(r.classList.contains('overdue-row'))ov++;}
   });
-  document.getElementById('pendingCount').textContent = 'Pending: ' + p;
-  document.getElementById('doneCount').textContent    = 'Done: ' + d;
-  document.getElementById('totalCount').textContent   = 'Total: ' + t;
-  const b = document.getElementById('tableBadge');
-  if (b) b.textContent = p;
+  document.getElementById('pendingCount').textContent='Pending: '+p;
+  document.getElementById('doneCount').textContent='Done: '+d;
+  document.getElementById('totalCount').textContent='Total: '+t;
+  const ovEl=document.getElementById('overdueCount');
+  ovEl.style.display=ov>0?'':'none';if(ov>0)ovEl.textContent='Overdue: '+ov;
+  const b=document.getElementById('tableBadge');if(b)b.textContent=p;
 }
 
-// ═══════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function fmtDate(d) {
-  if (!d) return '—';
-  const dt = new Date(d + 'T12:00:00');
-  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-function setSyncState(state, label) {
-  const dot = document.getElementById('syncDot');
-  const lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot ' + (state === 'ok' ? '' : state);
-  lbl.textContent = label;
-}
-function setLoadingMsg(msg) {
-  const el = document.getElementById('loadingMsg');
-  if (el) el.textContent = msg;
-}
-function updateHeaderDate() {
-  document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-}
-async function refreshData() {
-  setSyncState('syncing','Refreshing...');
-  document.getElementById('loadingOverlay').style.display='flex';
-  await init();
+function exportWeekly(){
+  const weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+  const weekly=_allItems.filter(i=>i.meeting_date&&new Date(i.meeting_date+'T12:00:00')>=weekStart);
+  let text='ATG Weekly Action Items — '+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+'\n'+'='.repeat(60)+'\n\n';
+  weekly.forEach((i,idx)=>{
+    text+=`${idx+1}. [${(i.status||'PENDING').toUpperCase()}] [${(i.priority||'MED').toUpperCase()}] ${i.title}\n`;
+    text+='   Meeting : '+(i.meeting_label||'—')+'\n   Due     : '+(i.due_date||'TBD')+'\n';
+    if(i.partner_poc)text+='   Partner : '+i.partner_poc+'\n';
+    if(i.alt_atg_poc)text+='   ATG POC : '+i.alt_atg_poc+'\n';
+    text+='\n';
+  });
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([text],{type:'text/plain'})),download:'ATG_Weekly_Tasks_'+TODAY+'.txt'});
+  a.click();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+function sendEmailDigest(){
+  const pending=_allItems.filter(i=>i.status!=='done'),now=new Date();
+  const overdue=pending.filter(i=>{if(!i.due_date||i.due_date==='TBD')return false;const dm=i.due_date.match(/\d{4}-\d{2}-\d{2}/);return dm&&new Date(dm[0]+'T23:59:59')<now;});
+  let body='ATG Daily Digest — '+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+'\n\nOpen: '+pending.length+'  |  Overdue: '+overdue.length+'\n'+'-'.repeat(50)+'\n\n';
+  if(overdue.length){body+='OVERDUE:\n';overdue.forEach(i=>{body+='  ! '+i.title+' (Due: '+i.due_date+')\n';});body+='\n';}
+  body+='ALL OPEN:\n';
+  pending.forEach((i,idx)=>{
+    body+=`${idx+1}. [${(i.priority||'MED').toUpperCase()}] ${i.title}\n   Meeting: ${i.meeting_label||'—'} | Due: ${i.due_date||'TBD'}\n`;
+    if(i.partner_poc)body+='   Partner POC: '+i.partner_poc+'\n';
+    if(i.alt_atg_poc)body+='   ATG POC: '+i.alt_atg_poc+'\n';
+    body+='\n';
+  });
+  window.location.href='mailto:mlewis007gtr@gmail.com?subject='+encodeURIComponent('ATG Daily Digest — '+TODAY)+'&body='+encodeURIComponent(body);
+}
+
+function esc(s){if(s==null)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escAttr(s){if(s==null)return '';return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+function fmtDate(d){if(!d)return '—';return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function setSyncState(state,label){document.getElementById('syncDot').className='sync-dot'+(state==='ok'?'':' '+state);document.getElementById('syncLabel').textContent=label;}
+function setLoadingMsg(msg){const el=document.getElementById('loadingMsg');if(el)el.textContent=msg;}
+function updateHeaderDate(){document.getElementById('headerDate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
+async function refreshData(){setSyncState('syncing','Refreshing...');document.getElementById('loadingOverlay').style.display='flex';await init();}
+
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
