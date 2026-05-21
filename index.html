@@ -271,6 +271,7 @@ function toBullets(text) {
 }
 
 function renderMeetingCards(meetings) {
+  var _mgEl=document.getElementById("meetingsGrid");if(!_mgEl)return;
   const grid=document.getElementById('meetingsGrid');
   document.getElementById('meetingBadge').textContent=meetings.length+' Calls';
   if(meetings.length===0){grid.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px;grid-column:1/-1;">No meetings found for today.</div>';return;}
