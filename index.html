@@ -183,7 +183,7 @@
 </div>
 <script>
 const SUPABASE_URL  = 'https://ugpqckzplznrawfnglys.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InUncHFja3pwbHpucmF3Zm5nbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTg4NTEsImV4cCI6MjA5NDg3NDg1MX0.DUDH9hb0UGrOIznzOAJksieNWexeVPdlvodZJsr2jlY';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVncHFja3pwbHpucmF3Zm5nbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTg4NTEsImV4cCI6MjA5NDg3NDg1MX0.DUDH9hb0UGrOIznzOAJksieNWexeVPdlvodZJsr2jlY';
 const TODAY = new Date().toISOString().split('T')[0];
 let _allItems = [];
 
@@ -238,7 +238,7 @@ function toBullets(text) {
   let lines=text.split(/\n+/).map(s=>s.trim()).filter(s=>s.length>2);
   if(lines.length<=1) lines=text.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(s=>s.length>2);
   if(lines.length===0)return '<li>'+esc(text.trim())+'</li>';
-  return lines.map(l=>'<li>'+esc(l.replace(/^[-*ڀ�]\s*/,''))+'</li>').join('');
+  return lines.map(l=>'<li>'+esc(l.replace(/^[-*ڀ�]\s*/,''))+'</li>').join('');
 }
 
 function renderMeetingCards(meetings) {
