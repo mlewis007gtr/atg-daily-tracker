@@ -162,7 +162,19 @@
 </div>
 <div class="page-body">
   <div class="section-title">Today's Meetings <span class="badge" id="meetingBadge">—</span></div>
-  <div class="meetings-grid" id="meetingsGrid"><div style="color:var(--muted);font-size:13px;padding:20px;">Loading meetings...</div></div>
+  <div class="section-title" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <h2 style="margin:0;font-size:16px;display:flex;align-items:center;gap:6px"><span>📅</span> Meetings</h2>
+    <select id="mtg-period" style="padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-size:13px;cursor:pointer" onchange="mtgFilter(this.value)">
+      <option value="today">Today</option>
+      <option value="yesterday">Yesterday</option>
+      <option value="week">This Week</option>
+      <option value="lastweek">Last Week</option>
+      <option value="all">All</option>
+    </select>
+    <button onclick="loadMtgCards(true)" style="padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);cursor:pointer;font-size:13px">&#8635; Sync</button>
+    <span id="mtg-count" class="badge">—</span>
+  </div>
+  <div id="mtg-cards" class="mtg-grid"><div class="empty-state">Loading meetings…</div></div>
   <div class="section-title">All Pending Do-Outs &amp; Deliverables <span class="badge" id="tableBadge">—</span></div>
   <div class="table-card">
     <div class="table-header">
