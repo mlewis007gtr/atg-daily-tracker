@@ -108,6 +108,23 @@
   @keyframes spin { to { transform:rotate(360deg); } }
   @media (max-width:900px) { .page-header, .toolbar, .page-body { padding-left:14px; padding-right:14px; } .meetings-grid { grid-template-columns:1fr; } }
   @media print { .toolbar, .btn, .loading-overlay { display:none !important; } body { background:#fff; } .page-header { position:relative; } }
+
+.mtg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px}
+@media(max-width:900px){.mtg-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.mtg-grid{grid-template-columns:1fr}}
+.mtg-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .18s,transform .18s,box-shadow .18s;min-height:120px;display:flex;flex-direction:column;gap:4px}
+.mtg-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.mtg-card-title{font-weight:600;font-size:14px;color:var(--text);line-height:1.3}
+.mtg-card-date{font-size:12px;color:var(--muted)}
+.mtg-card-atts{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtg-card-co{font-size:11px;color:var(--accent);font-weight:600;margin-top:auto;padding-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtg-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center}
+.mtg-modal-box{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;width:min(740px,93vw);max-height:88vh;overflow-y:auto;padding:28px 32px;position:relative}
+.mtg-modal-x{position:absolute;top:14px;right:16px;background:none;border:none;font-size:26px;cursor:pointer;color:var(--muted);line-height:1;padding:0}
+.mtg-note-li{margin:6px 0;line-height:1.6;font-size:14px}
+.mtg-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0;padding:14px;background:var(--hover);border-radius:8px;font-size:13px}
+.mtg-meta-lbl{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.mtg-chip{display:inline-block;background:var(--hover);border-radius:4px;padding:2px 8px;font-size:12px;margin:2px}
 </style>
 </head>
 <body>
@@ -423,6 +440,89 @@ function updateHeaderDate(){document.getElementById('headerDate').textContent=ne
 async function refreshData(){setSyncState('syncing','Refreshing...');document.getElementById('loadingOverlay').style.display='flex';await init();}
 
 document.addEventListener('DOMContentLoaded',init);
+
+let _allMtgs=[];
+async function loadMtgCards(forceRefresh){loadMtgCards();
+  try{
+    const res=await sb('meetings?order=meeting_date.desc,meeting_time.desc&limit=50');
+    if(res&&res.ok) _allMtgs=await res.json();
+  }catch(e){console.warn('mtg load err',e);}
+  mtgFilter(document.getElementById('mtg-period')&&document.getElementById('mtg-period').value||'today');
+}
+function mtgFilter(period){
+  const now=new Date();
+  const toISO=d=>d.toISOString().slice(0,10);
+  const today=toISO(now);
+  const yest=toISO(new Date(+now-864e5));
+  const dow=now.getDay();
+  const wkS=toISO(new Date(+now-dow*864e5));
+  const lwE=toISO(new Date(+now-dow*864e5-864e5));
+  const lwS=toISO(new Date(+now-(dow+7)*864e5));
+  let f=_allMtgs;
+  if(period==='today') f=_allMtgs.filter(m=>m.meeting_date===today);
+  else if(period==='yesterday') f=_allMtgs.filter(m=>m.meeting_date===yest);
+  else if(period==='week') f=_allMtgs.filter(m=>m.meeting_date>=wkS&&m.meeting_date<=today);
+  else if(period==='lastweek') f=_allMtgs.filter(m=>m.meeting_date>=lwS&&m.meeting_date<=lwE);
+  renderMtgCards(f.slice(0,8));
+  const el=document.getElementById('mtg-count');
+  if(el) el.textContent=f.length+' Meeting'+(f.length!==1?'s':'');
+}
+function renderMtgCards(mtgs){
+  const grid=document.getElementById('mtg-cards');
+  if(!grid)return;
+  if(!mtgs||!mtgs.length){grid.innerHTML='<div class="empty-state">No meetings found for this period</div>';return;}
+  grid.innerHTML=mtgs.map(m=>{
+    const atts=Array.isArray(m.attendees)?m.attendees.map(a=>a.name||String(a)).join(', '):(m.attendees||'');
+    const cos=Array.isArray(m.companies)&&m.companies.length?m.companies.join(' · '):'';
+    const t=m.meeting_time?m.meeting_time.slice(0,5):'';
+    const dateStr=m.meeting_date?new Date(m.meeting_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+    return '<div class="mtg-card" onclick="openMtgModal('+m.id+')">'
+      +'<div class="mtg-card-title">'+mH(m.call_name||'Untitled')+'</div>'
+      +'<div class="mtg-card-date">'+mH(dateStr+(t?' · '+t:'')+(m.duration_minutes?' · '+m.duration_minutes+'min':''))+'</div>'
+      +(atts?'<div class="mtg-card-atts">👥 '+mH(atts.length>60?atts.slice(0,57)+'…':atts)+'</div>':'')
+      +(cos?'<div class="mtg-card-co">'+mH(cos)+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+function openMtgModal(id){
+  const m=_allMtgs.find(x=>x.id===id);
+  if(!m)return;
+  const modal=document.getElementById('mtg-modal');
+  const body=document.getElementById('mtg-modal-body');
+  if(!modal||!body)return;
+  const atts=Array.isArray(m.attendees)?m.attendees.map(a=>'<span class="mtg-chip">'+mH(a.name||String(a))+'</span>').join(''):'';
+  const cos=Array.isArray(m.companies)&&m.companies.length?m.companies.join(' · '):'—';
+  const dateStr=m.meeting_date?new Date(m.meeting_date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'—';
+  const t=m.meeting_time?m.meeting_time.slice(0,5):'—';
+  const dur=m.duration_minutes?(m.duration_minutes+' min'):'—';
+  const notes=(m.raw_notes||m.summary||'No notes available.');
+  const bullets=notes.split('\n').filter(l=>l.trim()).map(l=>'<li class="mtg-note-li">'+mH(l.replace(/^[-•*]\s*/,'').trim())+'</li>').join('');
+  body.innerHTML='<h3 style="margin:0 0 4px;font-size:19px;padding-right:30px;line-height:1.3">'+mH(m.call_name||'Meeting')+'</h3>'
+    +'<div class="mtg-meta-grid">'
+    +'<div><div class="mtg-meta-lbl">Date</div><div>'+mH(dateStr)+'</div></div>'
+    +'<div><div class="mtg-meta-lbl">Time</div><div>'+mH(t)+'</div></div>'
+    +'<div><div class="mtg-meta-lbl">Duration</div><div>'+mH(dur)+'</div></div>'
+    +'<div><div class="mtg-meta-lbl">Companies</div><div>'+mH(cos)+'</div></div>'
+    +'</div>'
+    +(atts?'<div style="margin-bottom:16px"><div class="mtg-meta-lbl" style="margin-bottom:6px">Attendees</div>'+atts+'</div>':'')
+    +'<div class="mtg-meta-lbl" style="margin-bottom:8px">Meeting Notes</div>'
+    +'<ul style="margin:0;padding-left:20px;list-style:disc">'+bullets+'</ul>'
+    +(m.circleback_url?'<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)"><a href="'+mH(m.circleback_url)+'" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-size:13px">&#128279; View full notes in Circleback &rarr;</a></div>':'');
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeMtgModal(){
+  const m=document.getElementById('mtg-modal');
+  if(m){m.style.display='none';document.body.style.overflow='';}
+}
+function mH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 </script>
+<div id="mtg-modal" class="mtg-modal-ov" style="display:none" onclick="if(event.target===this)closeMtgModal()">
+  <div class="mtg-modal-box">
+    <button class="mtg-modal-x" onclick="closeMtgModal()">&#x2715;</button>
+    <div id="mtg-modal-body"></div>
+  </div>
+</div>
 </body>
 </html>
