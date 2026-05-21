@@ -536,5 +536,23 @@ function mH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&
     <div id="mtg-modal-body"></div>
   </div>
 </div>
+<script>
+(function(){
+  window.loadMtgCards=async function(forceRefresh){
+    try{
+      var res=await sb('meetings?order=meeting_date.desc,meeting_time.desc&limit=50');
+      if(Array.isArray(res)) _allMtgs=res;
+      else if(res&&res.ok) _allMtgs=await res.json();
+    }catch(e){console.warn('mtg err',e);}
+    var p=document.getElementById('mtg-period');
+    mtgFilter(p?p.value:'today');
+  };
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){loadMtgCards();});
+  } else {
+    setTimeout(function(){loadMtgCards();},200);
+  }
+})();
+</script>
 </body>
 </html>
